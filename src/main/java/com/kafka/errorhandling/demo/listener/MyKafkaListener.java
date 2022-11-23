@@ -25,12 +25,16 @@ public class MyKafkaListener {
     )
     @KafkaListener(id = "${spring.kafka.consumer.group-id}", topics = "${topic}")
     public void handleMessage(String message, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
-        log.info("Received message: {} from topic: {}", message, topic);
-        throw new RuntimeException("Test exception");
+        log.info(">> Received message: {} from topic: {}", message, topic);
+        if ("ok".equalsIgnoreCase(message)) {
+            log.info(">> OK Processed message: {} from topic: {}", message, topic);
+        } else {
+            throw new RuntimeException("Test exception");
+        }
     }
 
     @DltHandler
     public void handleDlt(String message, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
-        log.info("Message: {} handled by dlq topic: {}", message, topic);
+        log.info(">> Message: {} handled by dlq topic: {}", message, topic);
     }
 }
